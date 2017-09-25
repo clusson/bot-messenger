@@ -16,6 +16,9 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+
+console.log(process.env.VERIFY_TOKEN);
+
 // Webhook validation.
 app.get('/webhook', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
