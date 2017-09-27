@@ -93,6 +93,7 @@ function receivedMessage(event) {
       default:
         conn.then(
           debug.log('conn publish OK'),
+          console.error('conn publish OK', conn),
           publisher(conn, message)
         )
         sendTextMessage(senderID, messageText)
