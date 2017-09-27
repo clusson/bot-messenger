@@ -12,10 +12,6 @@ const conn = require('./rabbit/connectionService')
 // The rest of the code implements the routes for our Express server.
 const app = express()
 
-conn.then(
-  receiver(conn)
-)
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
