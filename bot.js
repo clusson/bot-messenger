@@ -55,7 +55,7 @@ app.post('/webhook', function (req, res) {
     // Assume all went well.
     //
     // You must send back a 200, within 20 seconds, to let us know
-    // you've successfully received the callback. Otherwise, the request
+    // you've successfully  the callback. Otherwise, the request
     // will time out and we will keep trying to resend.
     res.sendStatus(200)
   }
@@ -80,7 +80,7 @@ function receivedMessage(event) {
 
   var messageText = message.text
   var messageAttachments = message.attachments
-  var user = getUser()
+  var user = getUser(event)
   if (messageText) {
     debug.log('text message ok')
     // If we receive a text message, check to see if it matches a keyword
@@ -105,7 +105,7 @@ function receivedMessage(event) {
 
 function receivedPostback(event) {
   var senderID = event.sender.id
-  var user = getUser()
+  var user = getUser(event)
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
   sendFirstMessage(senderID, user, 'Postback called')
