@@ -3,6 +3,8 @@
 
 module.exports = (conn, message) => {
   conn.createChannel((err, ch) => {
+    console.log('publish is here')
+    console.log(conn)
 
 
     const ex = process.env.RABBIT_EXCHANGE
