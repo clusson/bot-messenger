@@ -6,7 +6,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 const path = require('path');
-var messengerButton = "<html><head><title>Facebook Messenger Bot</title></head><body><h1>Facebook Messenger Bot</h1></body></html>";
+var messenger = "<html><head><title>Facebook Messenger Bot</title></head><body><h1>Facebook Messenger Bot</h1></body></html>";
+var user = getUser();
 
 // The rest of the code implements the routes for our Express server.
 let app = express();
@@ -30,13 +31,12 @@ app.get('/webhook', function(req, res) {
 // Display the web page
 app.get('/', function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
-  res.write(messengerButton);
+  res.write(messenger);
   res.end();
 });
 
 // Message processing
 app.post('/webhook', function (req, res) {
-  console.log(req.body);
   var data = req.body;
 
   // Make sure this is a page subscription
@@ -52,7 +52,9 @@ app.post('/webhook', function (req, res) {
         if (event.message) {
           receivedMessage(event);
         } else if (event.postback) {
-          receivedPostback(event);   
+          if (event.postback.payload === 'get_started'){
+            //TODO - Call API when first user connection
+          }
         } else {
           console.log("Webhook received unknown event: ", event);
         }
@@ -69,13 +71,13 @@ app.post('/webhook', function (req, res) {
 });
 
 function getUser (response, convo) {
-  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=' + process.env.page_token;
+  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,&access_token=' + process.env.page_token;
   request({
       url: usersPublicProfile,
       json: true // parse
   }, function (error, response, body) {
           if (!error && response.statusCode === 200) {
-              convo.say('Hi ' + body.first_name);
+              return usersPublicProfile;
           }
       });
   };
@@ -108,7 +110,7 @@ function receivedMessage(event) {
         sendTextMessage(senderID, messageText);
     }
   } else if (messageAttachments) {
-    sendTextMessage(senderID, "Message with attachment received");
+    sendTextMessage(senderID, user, "Message with attachment received");
   }
 }
 
@@ -124,25 +126,37 @@ function receivedPostback(event) {
   console.log("Received postback for user %d and page %d with payload '%s' " + 
     "at %d", senderID, recipientID, payload, timeOfPostback);
 
-  getUser();
 
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
-  sendTextMessage(senderID, "Postback called");
+  sendTextMessage(senderID, user,  "Postback called");
 }
 
 //////////////////////////
 // Sending helpers
 //////////////////////////
-function sendTextMessage(recipientId, messageText) {
+function sendTextMessage(recipientId, user, messageText) {
+
   var messageData = {
-    recipient: {
+    userId: {
       id: recipientId
     },
     message: {
       text: messageText
+    },
+    timestamp: {
+      time: user.timestamp
     }
   };
+
+  // var messageData = {
+  //   recipient: {
+  //     id: recipientId
+  //   },
+  //   message: {
+  //     text: messageText
+  //   }
+  // };
 
   callSendAPI(messageData);
 }
@@ -203,6 +217,6 @@ function callSendAPI(messageData) {
 }
 
 // Set Express to listen out for HTTP requests
-var server = app.listen(process.env.PORT || 4000, function () {
+var server = app.listen(process.env.PORT, function () {
   console.log("Listening on port %s", server.address().port);
 });
