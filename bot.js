@@ -69,22 +69,13 @@ function receivedMessage(event) {
   var messageText = message.text
   var messageAttachments = message.attachments
   if (messageText) {
-    debug.log('text message ok')
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
-    switch (messageText) {
-      case 'generic':
-        sendGenericMessage(senderID)
-        break
+    conn.then(
+      publisher(conn, message)
+    )
 
-      default:
-        conn.then(
-          debug.log('conn publish OK'),
-          console.error('conn publish OK', conn),
-          publisher(conn, message)
-        )
-        sendTextMessage(senderID, messageText)
-    }
+    sendTextMessage(senderID, messageText)
   } else if (messageAttachments) {
     sendTextMessage(senderID, 'Message with attachment received')
   }
@@ -112,8 +103,6 @@ function sendFirst(recipientId, messageText) {
       // time: user.timestamp
     }
   }
-
-  callSendAPI(messageData)
 }
 
 
@@ -133,46 +122,9 @@ function sendTextMessage(recipientId, messageText) {
       // time: user.timestamp
     }
   }
-  callSendAPI(messageData)
+  // TODO - Get data from receiver
 }
 
-function sendGenericMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      attachment: {
-        type: 'template',
-        payload: {
-          template_type: 'generic',
-          elements: [{
-            title: 'epsi',
-            subtitle: ' ',
-            item_url: 'http://epsi.fr',
-            image_url: 'https://pbs.twimg.com/profile_images/690614801651859456/HBZe85Sz.png',
-            buttons: [{
-              type: 'web_url',
-              url: 'http://epsi.fr',
-              title: 'Accèder à la page de l\'EPSI'
-            }, {
-              type: 'postback',
-              title: 'Call Postback',
-              payload: 'Payload for first bubble',
-            }],
-          }]
-        }
-      }
-    }
-  }
-
-  callSendAPI(messageData)
-}
-
-function callSendAPI(messageData) {
-
-  debug.log(messageData)
-}
 
 // Set Express to listen out for HTTP requests
 var server = app.listen(process.env.PORT, function () {
