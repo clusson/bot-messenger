@@ -85,6 +85,7 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments
   var user = getUser()
   if (messageText) {
+    console.log('text message ok')
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
     switch (messageText) {
@@ -94,6 +95,7 @@ function receivedMessage(event) {
 
       default:
         conn.then(
+          console.log('conn publish OK'),
           publisher(conn, message)
         )
         sendTextMessage(senderID, messageText)
