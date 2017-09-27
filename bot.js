@@ -61,18 +61,6 @@ app.post('/webhook', function (req, res) {
   }
 })
 
-function getUser(response) {
-  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,&access_token=' + process.env.page_token
-  request({
-    url: usersPublicProfile,
-    json: true // parse
-  }, function (error, response) {
-    if (!error && response.statusCode === 200) {
-      return usersPublicProfile
-    }
-  })
-}
-
 // Incoming events handling
 function receivedMessage(event) {
   var senderID = event.sender.id
@@ -80,7 +68,6 @@ function receivedMessage(event) {
 
   var messageText = message.text
   var messageAttachments = message.attachments
-  var user = getUser(event)
   if (messageText) {
     debug.log('text message ok')
     // If we receive a text message, check to see if it matches a keyword
@@ -99,31 +86,30 @@ function receivedMessage(event) {
         sendTextMessage(senderID, messageText)
     }
   } else if (messageAttachments) {
-    sendTextMessage(senderID, user, 'Message with attachment received')
+    sendTextMessage(senderID, 'Message with attachment received')
   }
 }
 
 function receivedPostback(event) {
   var senderID = event.sender.id
-  var user = getUser(event)
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
-  sendFirstMessage(senderID, user, 'Postback called')
+  sendFirstMessage(senderID, 'Postback called')
 }
 
-function sendFirstMessage(recipientId, user, messageText) {
+function sendFirstMessage(recipientId, messageText) {
 
   var messageData = {
     user: {
       id: recipientId,
-      lastname: user.lastname,
-      firstname: user.firstname
+      // lastname: user.lastname,
+      // firstname: user.firstname
     },
     message: {
       text: messageText
     },
     timestamp: {
-      time: user.timestamp
+      // time: user.timestamp
     }
   }
 
@@ -134,7 +120,7 @@ function sendFirstMessage(recipientId, user, messageText) {
 //////////////////////////
 // Sending helpers
 //////////////////////////
-function sendTextMessage(recipientId, user, messageText) {
+function sendTextMessage(recipientId, messageText) {
 
   var messageData = {
     userId: {
@@ -144,7 +130,7 @@ function sendTextMessage(recipientId, user, messageText) {
       text: messageText
     },
     timestamp: {
-      time: user.timestamp
+      // time: user.timestamp
     }
   }
   callSendAPI(messageData)
