@@ -72,6 +72,18 @@ app.post('/webhook', function (req, res) {
   }
 });
 
+function getUser (response, convo) {
+  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=' + process.env.page_token;
+  request({
+      url: usersPublicProfile,
+      json: true // parse
+  }, function (error, response, body) {
+          if (!error && response.statusCode === 200) {
+              convo.say('Hi ' + body.first_name);
+          }
+      });
+  };
+
 // Incoming events handling
 function receivedMessage(event) {
   var senderID = event.sender.id;
@@ -116,6 +128,8 @@ function receivedPostback(event) {
   console.log("Received postback for user %d and page %d with payload '%s' " + 
     "at %d", senderID, recipientID, payload, timeOfPostback);
 
+  getUser();
+
   // When a postback is called, we'll send a message back to the sender to 
   // let them know it was successful
   sendTextMessage(senderID, "Postback called");
@@ -149,7 +163,7 @@ function sendGenericMessage(recipientId) {
           template_type: "generic",
           elements: [{
             title: "rift",
-            subtitle: "Next-generation virtual reality",
+            subtitle: " ",
             item_url: "https://www.oculus.com/en-us/rift/",               
             image_url: "http://messengerdemo.parseapp.com/img/rift.png",
             buttons: [{
