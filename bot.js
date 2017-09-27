@@ -16,14 +16,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
-console.log(process.env.VERIFY_TOKEN);
-
 // Webhook validation.
 app.get('/webhook', function(req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
-    console.log("Validating webhook");
     res.status(200).send(req.query['hub.challenge']);
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
@@ -162,33 +158,19 @@ function sendGenericMessage(recipientId) {
         payload: {
           template_type: "generic",
           elements: [{
-            title: "rift",
+            title: "epsi",
             subtitle: " ",
-            item_url: "https://www.oculus.com/en-us/rift/",               
-            image_url: "http://messengerdemo.parseapp.com/img/rift.png",
+            item_url: "http://epsi.fr",               
+            image_url: "https://pbs.twimg.com/profile_images/690614801651859456/HBZe85Sz.png",
             buttons: [{
               type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Open Web URL"
+              url: "http://epsi.fr",
+              title: "Accèder à la page de l'EPSI"
             }, {
               type: "postback",
               title: "Call Postback",
               payload: "Payload for first bubble",
             }],
-          }, {
-            title: "touch",
-            subtitle: "Your Hands, Now in VR",
-            item_url: "https://www.oculus.com/en-us/touch/",               
-            image_url: "http://messengerdemo.parseapp.com/img/touch.png",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/touch/",
-              title: "Open Web URL"
-            }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
-            }]
           }]
         }
       }
