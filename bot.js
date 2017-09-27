@@ -1,136 +1,128 @@
 //
 // This is main file containing code implementing the Express server and functionality for the Express echo bot.
 //
-'use strict';
-const express = require('express');
-const bodyParser = require('body-parser');
-const request = require('request');
-const path = require('path');
-var messenger = "<html><head><title>Facebook Messenger Bot</title></head><body><h1>Facebook Messenger Bot</h1></body></html>";
-var user = getUser();
+'use strict'
+const express = require('express')
+const bodyParser = require('body-parser')
+const request = require('request')
+var user = getUser()
 
 // The rest of the code implements the routes for our Express server.
-let app = express();
+const app = express()
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
-}));
+}))
 
 // Webhook validation.
-app.get('/webhook', function(req, res) {
+app.get('/webhook', function (req, res) {
   if (req.query['hub.mode'] === 'subscribe' &&
-      req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
-    res.status(200).send(req.query['hub.challenge']);
+    req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
+    res.status(200).send(req.query['hub.challenge'])
   } else {
-    console.error("Failed validation. Make sure the validation tokens match.");
-    res.sendStatus(403);          
+    res.sendStatus(403)
   }
-});
-
-// Display the web page
-app.get('/', function(req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.write(messenger);
-  res.end();
-});
+})
 
 // Message processing
 app.post('/webhook', function (req, res) {
-  var data = req.body;
+  const data = req.body
 
   // Make sure this is a page subscription
   if (data.object === 'page') {
-    
+
     // Iterate over each entry - there may be multiple if batched
-    data.entry.forEach(function(entry) {
-      var pageID = entry.id;
-      var timeOfEvent = entry.time;
+    data.entry.forEach(function (entry) {
+      // var pageID = entry.id
+      // var timeOfEvent = entry.time
 
       // Iterate over each messaging event
-      entry.messaging.forEach(function(event) {
+      entry.messaging.forEach(function (event) {
         if (event.message) {
-          receivedMessage(event);
+          receivedMessage(event)
         } else if (event.postback) {
-          if (event.postback.payload === 'get_started'){
-            //TODO - Call API when first user connection
+          if (event.postback.payload === 'get_started') {
+            receivedPostback(event)
           }
         } else {
-          console.log("Webhook received unknown event: ", event);
+          console.log('Webhook received unknown event: ', event)
         }
-      });
-    });
+      })
+    })
 
     // Assume all went well.
     //
     // You must send back a 200, within 20 seconds, to let us know
     // you've successfully received the callback. Otherwise, the request
     // will time out and we will keep trying to resend.
-    res.sendStatus(200);
+    res.sendStatus(200)
   }
-});
+})
 
-function getUser (response, convo) {
-  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,&access_token=' + process.env.page_token;
+function getUser(response) {
+  var usersPublicProfile = 'https://graph.facebook.com/v2.6/' + response.user + '?fields=first_name,last_name,&access_token=' + process.env.page_token
   request({
-      url: usersPublicProfile,
-      json: true // parse
-  }, function (error, response, body) {
-          if (!error && response.statusCode === 200) {
-              return usersPublicProfile;
-          }
-      });
-  };
+    url: usersPublicProfile,
+    json: true // parse
+  }, function (error, response) {
+    if (!error && response.statusCode === 200) {
+      return usersPublicProfile
+    }
+  })
+}
 
 // Incoming events handling
 function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfMessage = event.timestamp;
-  var message = event.message;
+  var senderID = event.sender.id
+  var message = event.message
 
-  console.log("Received message for user %d and page %d at %d with message:", 
-    senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
-
-  var messageId = message.mid;
-
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
+  var messageText = message.text
+  var messageAttachments = message.attachments
 
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
     switch (messageText) {
       case 'generic':
-        sendGenericMessage(senderID);
-        break;
+        sendGenericMessage(senderID)
+        break
 
       default:
-        sendTextMessage(senderID, messageText);
+        sendTextMessage(senderID, messageText)
     }
   } else if (messageAttachments) {
-    sendTextMessage(senderID, user, "Message with attachment received");
+    sendTextMessage(senderID, user, 'Message with attachment received')
   }
 }
 
 function receivedPostback(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfPostback = event.timestamp;
+  var senderID = event.sender.id
 
-  // The 'payload' param is a developer-defined field which is set in a postback 
-  // button for Structured Messages. 
-  var payload = event.postback.payload;
-
-  console.log("Received postback for user %d and page %d with payload '%s' " + 
-    "at %d", senderID, recipientID, payload, timeOfPostback);
-
-
-  // When a postback is called, we'll send a message back to the sender to 
+  // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
-  sendTextMessage(senderID, user,  "Postback called");
+  sendFirstMessage(senderID, user, 'Postback called')
 }
+
+function sendFirstMessage(recipientId, user, messageText) {
+
+  var messageData = {
+    user: {
+      id: recipientId,
+      lastname: user.lastname,
+      firstname: user.firstname
+    },
+    message: {
+      text: messageText
+    },
+    timestamp: {
+      time: user.timestamp
+    }
+  }
+
+  callSendAPI(messageData)
+}
+
 
 //////////////////////////
 // Sending helpers
@@ -147,18 +139,8 @@ function sendTextMessage(recipientId, user, messageText) {
     timestamp: {
       time: user.timestamp
     }
-  };
-
-  // var messageData = {
-  //   recipient: {
-  //     id: recipientId
-  //   },
-  //   message: {
-  //     text: messageText
-  //   }
-  // };
-
-  callSendAPI(messageData);
+  }
+  callSendAPI(messageData)
 }
 
 function sendGenericMessage(recipientId) {
@@ -168,55 +150,38 @@ function sendGenericMessage(recipientId) {
     },
     message: {
       attachment: {
-        type: "template",
+        type: 'template',
         payload: {
-          template_type: "generic",
+          template_type: 'generic',
           elements: [{
-            title: "epsi",
-            subtitle: " ",
-            item_url: "http://epsi.fr",               
-            image_url: "https://pbs.twimg.com/profile_images/690614801651859456/HBZe85Sz.png",
+            title: 'epsi',
+            subtitle: ' ',
+            item_url: 'http://epsi.fr',
+            image_url: 'https://pbs.twimg.com/profile_images/690614801651859456/HBZe85Sz.png',
             buttons: [{
-              type: "web_url",
-              url: "http://epsi.fr",
-              title: "Accèder à la page de l'EPSI"
+              type: 'web_url',
+              url: 'http://epsi.fr',
+              title: 'Accèder à la page de l\'EPSI'
             }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for first bubble",
+              type: 'postback',
+              title: 'Call Postback',
+              payload: 'Payload for first bubble',
             }],
           }]
         }
       }
     }
-  };  
+  }
 
-  callSendAPI(messageData);
+  callSendAPI(messageData)
 }
 
 function callSendAPI(messageData) {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
-    method: 'POST',
-    json: messageData
 
-  }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
-
-      console.log("Successfully sent generic message with id %s to recipient %s", 
-        messageId, recipientId);
-    } else {
-      console.error("Unable to send message.");
-      console.error(response);
-      console.error(error);
-    }
-  });  
+  console.log(messageData)
 }
 
 // Set Express to listen out for HTTP requests
 var server = app.listen(process.env.PORT, function () {
-  console.log("Listening on port %s", server.address().port);
-});
+  console.log('Listening on port %s', server.address().port)
+})
