@@ -1,5 +1,5 @@
 // require('dotenv').config({ path: '.env' })
-
+const debug = require('debug')
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
     const ex = process.env.RABBIT_QUEUE_API
@@ -12,7 +12,7 @@ module.exports = (conn) => {
       ch.bindQueue(q.queue, ex, severity)
 
       ch.consume(q.queue, function (msg) {
-        console.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
+        debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
       }, { noAck: true })
     })
   })

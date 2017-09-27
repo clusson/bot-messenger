@@ -1,10 +1,10 @@
 
 // require('dotenv').config({ path: '.env' })
-
+const debug = require('debug')
 module.exports = (conn, message) => {
   conn.createChannel((err, ch) => {
-    console.log('publish is here')
-    console.log(conn)
+    debug.log('publish is here')
+    debug.log(conn)
 
 
     const ex = process.env.RABBIT_EXCHANGE
@@ -16,6 +16,6 @@ module.exports = (conn, message) => {
     ch.assertExchange(ex, severity, { durable: false })
     ch.bindQueue(queue_name, ex, severity)
     ch.publish(ex, severity, new Buffer(messageStr))
-    console.log(' [x] Sent %s: \'%s\'', severity, messageStr)
+    debug.log(' [x] Sent %s: \'%s\'', severity, messageStr)
   })
 }

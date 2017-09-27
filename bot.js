@@ -3,6 +3,7 @@
 //
 'use strict'
 const express = require('express')
+const debug = require('debug')
 const bodyParser = require('body-parser')
 const request = require('request')
 const receiver = require('./rabbit/receiver')
@@ -46,7 +47,7 @@ app.post('/webhook', function (req, res) {
             receivedPostback(event)
           }
         } else {
-          console.log('Webhook received unknown event: ', event)
+          debug.log('Webhook received unknown event: ', event)
         }
       })
     })
@@ -81,7 +82,7 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments
   var user = getUser()
   if (messageText) {
-    console.log('text message ok')
+    debug.log('text message ok')
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
     switch (messageText) {
@@ -91,7 +92,7 @@ function receivedMessage(event) {
 
       default:
         conn.then(
-          console.log('conn publish OK'),
+          debug.log('conn publish OK'),
           publisher(conn, message)
         )
         sendTextMessage(senderID, messageText)
@@ -183,10 +184,10 @@ function sendGenericMessage(recipientId) {
 
 function callSendAPI(messageData) {
 
-  console.log(messageData)
+  debug.log(messageData)
 }
 
 // Set Express to listen out for HTTP requests
 var server = app.listen(process.env.PORT, function () {
-  console.log('Listening on port %s', server.address().port)
+  debug.log('Listening on port %s', server.address().port)
 })
