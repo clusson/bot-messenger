@@ -19,6 +19,7 @@
   "license": "MIT",
   "homepage": "https://developers.facebook.com/docs/messenger-platform/guides/quick-start",
   "dependencies": {
+    "amqplib": "^0.5.1",
     "body-parser": "*",
     "debug": "^3.1.0",
     "express": "*",

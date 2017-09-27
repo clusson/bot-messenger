@@ -5,10 +5,15 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
-var user = getUser()
+const receiver = require('./rabbit/receiver')
+const publisher = require('./rabbit/publisher')
+
+const conn = require('./rabbit/connectionService')
 
 // The rest of the code implements the routes for our Express server.
 const app = express()
+
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -34,8 +39,6 @@ app.post('/webhook', function (req, res) {
 
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach(function (entry) {
-      // var pageID = entry.id
-      // var timeOfEvent = entry.time
 
       // Iterate over each messaging event
       entry.messaging.forEach(function (event) {
@@ -79,7 +82,7 @@ function receivedMessage(event) {
 
   var messageText = message.text
   var messageAttachments = message.attachments
-
+  var user = getUser()
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
@@ -89,6 +92,9 @@ function receivedMessage(event) {
         break
 
       default:
+        conn.then(
+          publisher(conn, message)
+        )
         sendTextMessage(senderID, messageText)
     }
   } else if (messageAttachments) {
@@ -98,7 +104,7 @@ function receivedMessage(event) {
 
 function receivedPostback(event) {
   var senderID = event.sender.id
-
+  var user = getUser()
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
   sendFirstMessage(senderID, user, 'Postback called')
