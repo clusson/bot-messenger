@@ -65,9 +65,10 @@ app.post('/webhook', function (req, res) {
 function receivedMessage(event) {
   var senderID = event.sender.id
   var message = event.message
-
   var messageText = message.text
   var messageAttachments = message.attachments
+  var messageId = message.mid
+
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
