@@ -12,6 +12,9 @@ const conn = require('./rabbit/connectionService')
 
 // The rest of the code implements the routes for our Express server.
 const app = express()
+const establishConnection = conn()
+
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -72,9 +75,10 @@ function receivedMessage(event) {
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
-    conn.then(
-      publisher(conn, message)
-    )
+
+    establishConnection.then((connectionEstablished) => {
+          publisher(connectionEstablished, message)
+    })
 
     sendTextMessage(senderID, messageText)
   } else if (messageAttachments) {
