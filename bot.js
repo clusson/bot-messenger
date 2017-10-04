@@ -15,7 +15,7 @@ const app = express()
 const establishConnection = conn()
 
 establishConnection.then((connectionEstablished) => {
-  receiver(connectionEstablished, messageData)
+  receiver(connectionEstablished)
 })
 
 
@@ -78,7 +78,7 @@ function receivedMessage(event) {
   var messageId = message.mid
 
   var messageData = {
-    'messageID' : messageId,
+    'messageID': messageId,
     'content': messageText,
     'timestamp': timestamp,
     'userid': ''
@@ -87,7 +87,7 @@ function receivedMessage(event) {
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     establishConnection.then((connectionEstablished) => {
-          publisher(connectionEstablished, messageData)
+      publisher(connectionEstablished, messageData)
     })
     sendTextMessage(senderID, messageText)
   } else if (messageAttachments) {
