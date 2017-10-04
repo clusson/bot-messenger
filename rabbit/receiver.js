@@ -5,7 +5,7 @@ module.exports = (conn) => {
     const ex = process.env.RABBIT_QUEUE_API
     const severity = process.env.RABBIT_TYPE
 
-    ch.assertExchange(ex, severity, { durable: false })
+    ch.assertExchange(ex, severity, { durable: true})
 
     ch.assertQueue('', { exclusive: true }, function (err, q) {
 

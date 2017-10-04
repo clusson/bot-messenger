@@ -13,7 +13,7 @@ module.exports = (conn, message) => {
 
     const messageStr = JSON.stringify(message)
 
-    ch.assertExchange(ex, severity, { durable: false })
+    ch.assertExchange(ex, severity, { durable: true})
     ch.bindQueue(queue_name, ex, severity)
     ch.publish(ex, severity, new Buffer(messageStr))
     debug.log(' [x] Sent %s: \'%s\'', severity, messageStr)
