@@ -69,15 +69,23 @@ function receivedMessage(event) {
   var senderID = event.sender.id
   var message = event.message
   var messageText = message.text
+  var timestamp = event.timestamp
   var messageAttachments = message.attachments
   var messageId = message.mid
+
+  var messageData = {
+    'messageID' : messageId,
+    'content': messageText,
+    'timestamp': timestamp,
+    'userid': ''
+  }
 
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
 
     establishConnection.then((connectionEstablished) => {
-          publisher(connectionEstablished, message)
+          publisher(connectionEstablished, messageData)
     })
 
     sendTextMessage(senderID, messageText)
