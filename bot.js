@@ -14,6 +14,10 @@ const conn = require('./rabbit/connectionService')
 const app = express()
 const establishConnection = conn()
 
+establishConnection.then((connectionEstablished) => {
+  receiver(connectionEstablished, messageData)
+})
+
 
 
 app.use(bodyParser.json())
@@ -82,17 +86,19 @@ function receivedMessage(event) {
 
   if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
-    // and send back the template example. Otherwise, just echo the text we received.
-
     establishConnection.then((connectionEstablished) => {
           publisher(connectionEstablished, messageData)
     })
-
     sendTextMessage(senderID, messageText)
   } else if (messageAttachments) {
     sendTextMessage(senderID, 'Message with attachment received')
   }
 }
+
+module.exports.send = (messageBack) => {
+  sendTextMessage(senderID, messageBack)
+}
+
 
 function receivedPostback(event) {
   var senderID = event.sender.id

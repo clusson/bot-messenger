@@ -1,5 +1,6 @@
 // require('dotenv').config({ path: '.env' })
 const debug = require('debug')
+const sendText = require('./bot.js')
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
     const ex = process.env.RABBIT_QUEUE_API
@@ -13,6 +14,7 @@ module.exports = (conn) => {
 
       ch.consume(q.queue, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
+        sendText.send(msg);
       }, { noAck: true })
     })
   })
