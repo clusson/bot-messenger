@@ -3,12 +3,13 @@ const debug = require('debug')
 const sendText = require('../bot.js')
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
+    const type = process.env.RABBIT_TYPE
     const ex = process.env.RABBIT_EXCHANGE
     const severity = process.env.RABBIT_BINDING_FACEBOOK
 
-    ch.assertExchange(ex, severity, { durable: true })
+    ch.assertExchange(ex, type, { durable: true })
 
-    ch.assertQueue('', { exclusive: true }, function (err, q) {
+    ch.assertQueue('', { durable: true }, function (err, q) {
 
       ch.bindQueue(q.queue, ex, severity)
 
