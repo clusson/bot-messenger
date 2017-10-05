@@ -15,7 +15,7 @@ module.exports = (conn) => {
 
       ch.consume(q.queue, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
-        sendText.send(msg)
+        sendText.send(msg.iduser, msg.content)
       }, { noAck: true })
     })
   })

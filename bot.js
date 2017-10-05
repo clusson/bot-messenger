@@ -86,15 +86,12 @@ function receivedMessage(event) {
     establishConnection.then((connectionEstablished) => {
       publisher(connectionEstablished, messageData)
     })
-    sendTextMessage(senderID, messageText)
+    
   } else if (messageAttachments) {
-    sendTextMessage(senderID, 'Message with attachment received')
+    
   }
 }
 
-module.exports.send = (messageBack) => {
-  sendTextMessage(senderID, messageBack)
-}
 
 
 function receivedPostback(event) {
@@ -116,21 +113,29 @@ function sendFirst(event, messageText) {
 //////////////////////////
 // Sending helpers
 //////////////////////////
-function sendTextMessage(recipientId, messageText) {
 
-  var messageData = {
-    userId: {
-      id: recipientId
-    },
-    message: {
-      text: messageText
-    },
-    timestamp: {
-      // time: user.timestamp
-    }
-  }
-  // TODO - Get data from receiver
+
+module.exports.send = (iduser, messageBack) => {
+  sendTextMessage(iduser, messageBack)
 }
+
+  function sendTextMessage(recipientId, messageText) {
+    
+      var messageData = {
+        userId: {
+          id: recipientId
+        },
+        message: {
+          text: messageText
+        },
+        timestamp: {
+          // time: user.timestamp
+        }
+      }
+      // TODO - Get data from receiver
+    }    
+  
+
 
 
 // Set Express to listen out for HTTP requests
