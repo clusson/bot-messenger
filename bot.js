@@ -50,7 +50,7 @@ app.post('/webhook', function (req, res) {
         if (event.message) {
           receivedMessage(event)
         } else if (event.postback) {
-            receivedPostback(event)
+          receivedPostback(event)
         } else {
           debug.log('Webhook received unknown event: ', event)
         }
@@ -86,27 +86,37 @@ function receivedMessage(event) {
     establishConnection.then((connectionEstablished) => {
       publisher(connectionEstablished, messageData)
     })
-    
-  } else if (messageAttachments) {
-    
   }
 }
 
 
 
 function receivedPostback(event) {
-  
+
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
-  sendFirst(event, 'Postback called')
+  sendFirst(event, event.user)
 }
 
-function sendFirst(event, messageText) {
-  var user = {
-    'nom': event.recipient.lastname,
-    'prenom': event.recipient.firstname,
-    'userid': event.senderID
+function sendFirst(event, user) {
+  var messageData = {
+    message: {
+      'messageid': event.message.mid,
+      'content': event.message.text,
+      'timestamp': event.timestamp.toString(),
+      'userid': event.sender.id
+    },
+    user: {
+      //NOT SURE
+      'nom': user.lastname,
+      'prenom': user.firstname,
+      'userid': event.senderID
+    }
   }
+
+  establishConnection.then((connectionEstablished) => {
+    publisher(connectionEstablished, messageData)
+  })
 }
 
 
@@ -119,22 +129,28 @@ module.exports.send = (iduser, messageBack) => {
   sendTextMessage(iduser, messageBack)
 }
 
-  function sendTextMessage(recipientId, messageText) {
-    
-      var messageData = {
-        userId: {
-          id: recipientId
-        },
-        message: {
-          text: messageText
-        },
-        timestamp: {
-          // time: user.timestamp
-        }
-      }
-      // TODO - Get data from receiver
-    }    
-  
+function sendTextMessage(recipientId, messageText) {
+
+  let messageData = { text: messageText }
+
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: process.env.VERIFY_TOKEN,
+    method: 'POST',
+    json: {
+      recipient: { id: recipientId },
+      message: messageData,
+    }
+  }, function (error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+  // TODO - Get data from receiver
+}
+
 
 
 
