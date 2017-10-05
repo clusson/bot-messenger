@@ -71,7 +71,7 @@ function receivedMessage(event) {
   var senderID = event.sender.id
   var message = event.message
   var messageText = message.text
-  var timestamp = event.timestamp
+  var timestamp = event.timestamp.toString()
   var messageAttachments = message.attachments
   var messageId = message.mid
 
