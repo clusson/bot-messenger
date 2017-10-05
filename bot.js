@@ -50,9 +50,7 @@ app.post('/webhook', function (req, res) {
         if (event.message) {
           receivedMessage(event)
         } else if (event.postback) {
-          if (event.postback.payload === 'get_started') {
             receivedPostback(event)
-          }
         } else {
           debug.log('Webhook received unknown event: ', event)
         }
@@ -78,14 +76,13 @@ function receivedMessage(event) {
   var messageId = message.mid
 
   var messageData = {
-    'messageID': messageId,
+    'messageid': messageId,
     'content': messageText,
     'timestamp': timestamp,
-    'userid': ''
+    'userid': senderID
   }
 
   if (messageText) {
-    // If we receive a text message, check to see if it matches a keyword
     establishConnection.then((connectionEstablished) => {
       publisher(connectionEstablished, messageData)
     })
@@ -101,26 +98,17 @@ module.exports.send = (messageBack) => {
 
 
 function receivedPostback(event) {
-  var senderID = event.sender.id
+  
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
-  sendFirst(senderID, 'Postback called')
+  sendFirst(event, 'Postback called')
 }
 
-function sendFirst(recipientId, messageText) {
-
-  var messageData = {
-    user: {
-      id: recipientId,
-      // lastname: user.lastname,
-      // firstname: user.firstname
-    },
-    message: {
-      text: messageText
-    },
-    timestamp: {
-      // time: user.timestamp
-    }
+function sendFirst(event, messageText) {
+  var user = {
+    'nom': event.recipient.lastname,
+    'prenom': event.recipient.firstname,
+    'userid': event.senderID
   }
 }
 
