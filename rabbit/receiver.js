@@ -12,12 +12,12 @@ module.exports = (conn) => {
 
     ch.assertQueue(queue_name, { durable: true }, function (err, q) {
 
-      ch.bindQueue(q.queue, ex, severity)
+      ch.bindQueue(queue_name, ex, severity)
 
-      ch.consume(q.queue, function (msg) {
+      ch.consume(queue_name, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
         bot.sendTextMessage(msg.iduser.toString(), msg.content.toString())
-      }, { noAck: false })
+      }, { noAck: true })
     })
   })
 }
