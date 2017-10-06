@@ -68,14 +68,14 @@ app.post('/webhook', function (req, res) {
 
 // Incoming events handling
 function receivedMessage(event) {
-  var senderID = event.sender.id
-  var message = event.message
-  var messageText = message.text
-  var timestamp = event.timestamp.toString()
-  var messageAttachments = message.attachments
-  var messageId = message.mid
+  const senderID = event.sender.id
+  const message = event.message
+  const messageText = message.text
+  const timestamp = event.timestamp.toString()
+  const messageAttachments = message.attachments
+  const messageId = message.mid
 
-  var messageData = {
+  const messageData = {
     'messageid': messageId,
     'content': messageText,
     'timestamp': timestamp,
@@ -99,7 +99,7 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, user) {
-  var messageData = {
+  const messageData = {
     message: {
       'messageid': event.message.mid,
       'content': event.message.text,
@@ -154,6 +154,6 @@ function sendTextMessage(recipientId, messageText) {
 
 
 // Set Express to listen out for HTTP requests
-var server = app.listen(process.env.PORT, function () {
+const server = app.listen(process.env.PORT, function () {
   debug.log('Listening on port %s', server.address().port)
 })
