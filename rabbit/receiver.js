@@ -6,10 +6,11 @@ module.exports = (conn) => {
     const type = process.env.RABBIT_TYPE
     const ex = process.env.RABBIT_EXCHANGE
     const severity = process.env.RABBIT_BINDING_FACEBOOK
+    const queue_name = process.env.RABBIT_QUEUE_FACEBOOK
 
     ch.assertExchange(ex, type, { durable: true })
 
-    ch.assertQueue('', { durable: true }, function (err, q) {
+    ch.assertQueue(queue_name, { durable: true }, function (err, q) {
 
       ch.bindQueue(q.queue, ex, severity)
 
