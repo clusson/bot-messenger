@@ -125,7 +125,7 @@ function sendFirst(event, user) {
 //////////////////////////
 
 
-module.exports = (iduser, messageBack) => {
+module.exports = () => {
   
 function sendTextMessage(recipientId, messageText) {
 

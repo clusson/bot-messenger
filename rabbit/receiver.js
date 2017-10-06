@@ -10,13 +10,13 @@ module.exports = (conn) => {
 
     ch.assertExchange(ex, type, { durable: true })
 
-    ch.assertQueue(queue_name, { durable: true }, function (err, ok) {
+    ch.assertQueue(queue_name, { durable: false }, function (err, ok) {
 
       ch.bindQueue(queue_name, ex, severity)
 
       ch.consume(queue_name, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
-        bot.sendTextMessage(msg.iduser.toString(), msg.content.toString())
+        bot.sendTextMessage(msg.iduser, msg.content.toString())
       }, { noAck: true })
     })
   })
