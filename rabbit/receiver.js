@@ -10,7 +10,7 @@ module.exports = (conn) => {
 
     ch.assertExchange(ex, type, { durable: true })
 
-    ch.assertQueue(queue_name, { durable: true }, function (err, q) {
+    ch.assertQueue(queue_name, { durable: true }, function (err, ok) {
 
       ch.bindQueue(queue_name, ex, severity)
 
