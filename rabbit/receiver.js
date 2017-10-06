@@ -1,6 +1,6 @@
 // require('dotenv').config({ path: '.env' })
 const debug = require('debug')
-const sendText = require('../bot.js')
+const bot = require('../bot.js')
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
     const type = process.env.RABBIT_TYPE
@@ -16,8 +16,8 @@ module.exports = (conn) => {
 
       ch.consume(q.queue, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
-        sendText.send(msg.iduser, msg.content)
-      }, { noAck: true })
+        bot.sendTextMessage(msg.iduser.toString(), msg.content.toString())
+      }, { noAck: false })
     })
   })
 }
