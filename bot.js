@@ -126,7 +126,9 @@ function sendFirst(event, user) {
 
 
 module.exports = () => {
-  
+  sendTextMessage
+}
+
 function sendTextMessage(recipientId, messageText) {
 
   let messageData = { text: messageText }
@@ -148,8 +150,6 @@ function sendTextMessage(recipientId, messageText) {
   })
   // TODO - Get data from receiver
 }
-}
-
 
 
 
