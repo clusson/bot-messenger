@@ -131,8 +131,9 @@ function sendFirst(event, user) {
       'timestamp': event.timestamp.toString()
     },
     user: {
-      //NOT SURE
-      user
+      'userid': event.senderID,
+      'nom': '',
+      'prenom':''
     }
   }
 
