@@ -128,7 +128,7 @@ function sendFirst(event, userid) {
   const userInfo = getProfile(userid)
 
   const messageData = {
-      'message': 'Bievenue ' + userInfo.first_name +'!',
+      'message': 'Bienvenue ' + userInfo.first_name +'!',
   }
   const user = {
       'userid': userid,
@@ -151,6 +151,8 @@ function getProfile (id) {
     },
     json: true
   }
+  debug.log(req)
+  debug.log(req.first_name)
   return req
 }
 
