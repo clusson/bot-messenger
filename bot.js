@@ -133,9 +133,7 @@ function sendFirst(event, user) {
     },
     user: {
       //NOT SURE
-      'nom': user.last_name,
-      'prenom': user.first_name,
-      'userid': event.senderID
+      user
     }
   }
 
