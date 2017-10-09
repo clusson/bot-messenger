@@ -16,6 +16,7 @@ module.exports = (conn) => {
 
       ch.consume(queue_name, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
+        console.log(msg.userid+" "+ msg.content.toString())
         bot.sendTextMessage(msg.userid, msg.content.toString())
       }, { noAck: true })
     })
