@@ -16,9 +16,7 @@ module.exports = (conn) => {
       ch.bindQueue(queue_name, ex, severity)
 
       ch.consume(queue_name, function (msg) {
-        debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
-        console.log("consumer")
-        console.log(msg.content.userid+" "+ msg.content.content.toString())
+        console.log(msg.content.userid+" "+ msg.content.content)
         sendTextMessage(msg.content.userid, msg.content.content)
       }, { noAck: true })
     })
