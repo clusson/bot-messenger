@@ -18,8 +18,8 @@ module.exports = (conn) => {
       ch.consume(queue_name, function (msg) {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
         console.log("consumer")
-        console.log(msg.userid+" "+ msg.content.toString())
-        sendTextMessage(msg.userid, msg.content.toString())
+        console.log(msg.content.userid+" "+ msg.content.content.toString())
+        sendTextMessage(msg.content.userid, msg.content.content.toString())
       }, { noAck: true })
     })
   })
