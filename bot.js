@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 function setGetStartedButton(res){
   const messageData = {
     'get_started':{
-      'payload':'GET_STARTED_PAYLOAD'
+      'payload':'get_started'
     }
   }
 
