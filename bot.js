@@ -128,8 +128,7 @@ function sendFirst(event, userid) {
   const userInfo = getProfile(userid)
 
   const messageData = {
-      'recipientID': event.recipient.id,
-      'timestamp': event.timestamp.toString()
+      'message': 'Bievenue' + userInfo.first_name +'!',
   }
   const user = {
       'userid': userid,
