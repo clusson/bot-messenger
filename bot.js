@@ -18,12 +18,40 @@ establishConnection.then((connectionEstablished) => {
   receiver(connectionEstablished)
 })
 
-
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
 }))
+
+function setGetStartedButton(res){
+  const messageData = {
+    'get_started':{
+      'payload':'<GET_STARTED_PAYLOAD>'
+    }
+  }
+
+  // Start the request
+  request({
+      url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ process.env.PAGE_ACCESS_TOKEN,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      form: messageData
+  },
+  function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+          // Print out the response body
+          res.send(body)
+
+      } else { 
+          // TODO: Handle errors
+          res.send(body)
+      }
+  })
+}     
+
+app.get('/setup',function(req,res){
+  setGetStartedButton(res)
+})
 
 // Webhook validation.
 app.get('/webhook', function (req, res) {
@@ -49,7 +77,7 @@ app.post('/webhook', function (req, res) {
       entry.messaging.forEach(function (event) {
         if (event.message) {
           receivedMessage(event)
-        } else if (event.postback) {
+        } else if (event.postback && event.postback.payload === 'get_started') {
           receivedPostback(event)
         } else {
           debug.log('Webhook received unknown event: ', event)
@@ -106,14 +134,14 @@ function sendFirst(event, user) {
     },
     user: {
       //NOT SURE
-      'nom': user.lastname,
-      'prenom': user.firstname,
+      'nom': user.last_name,
+      'prenom': user.first_name,
       'userid': event.senderID
     }
   }
 
   establishConnection.then((connectionEstablished) => {
-    publisher(connectionEstablished, messageData)
+    publisher(connectionEstablished, messageData, user)
   })
 }
 
