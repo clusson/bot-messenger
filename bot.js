@@ -127,7 +127,7 @@ function receivedPostback(event) {
 function sendFirst(event, user) {
   const messageData = {
     message: {
-      'messageid': event.message.mid,
+      // 'messageid': event.message.id,
       'content': event.message.text,
       'timestamp': event.timestamp.toString(),
       'userid': event.sender.id
