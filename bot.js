@@ -131,7 +131,7 @@ function sendFirst(event, user) {
       'timestamp': event.timestamp.toString()
     },
     user: {
-      'userid': event.senderID,
+      'userid': event.sender.id,
       'nom': '',
       'prenom':''
     }
