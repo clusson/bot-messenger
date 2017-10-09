@@ -2,7 +2,10 @@ const request = require('request')
 const debug = require('debug')
 
 module.exports = (recipientId, messageText) => { 
-    
+  console.log("-----------")
+    console.log(recipientId)
+    console.log("-----------")
+      console.log(process.env.VERIFY_TOKEN)
       let messageData = { text: messageText }
     
       request({
