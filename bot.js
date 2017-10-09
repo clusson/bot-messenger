@@ -145,9 +145,10 @@ function sendFirst(event, userid) {
 function getProfile (id) {
   const req = {
     method: 'GET',
-    uri: 'https://graph.facebook.com/v2.6/' +id+'?access_token='+ process.env.PAGE_ACCESS_TOKEN,
+    uri: 'https://graph.facebook.com/v2.6/' +id+'?',
     qs: {
-      fields: 'first_name,last_name,profile_pic,locale,timezone,gender'
+      access_token: process.env.PAGE_ACCESS_TOKEN,
+      fields: 'first_name,last_name'
     },
     json: true
   }
