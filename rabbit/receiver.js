@@ -1,6 +1,6 @@
 // require('dotenv').config({ path: '.env' })
 const debug = require('debug')
-const bot = require('../sender.js')
+const bot = require('../bot.js')
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
     const type = process.env.RABBIT_TYPE
