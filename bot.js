@@ -23,33 +23,33 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-function setGetStartedButton(res){
+function setGetStartedButton(res) {
   const messageData = {
-    'get_started':{
-      'payload':'get_started'
+    'get_started': {
+      'payload': 'get_started'
     }
   }
 
   // Start the request
   request({
-      url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token='+ process.env.PAGE_ACCESS_TOKEN,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      form: messageData
+    url: 'https://graph.facebook.com/v2.6/me/messenger_profile?access_token=' + process.env.PAGE_ACCESS_TOKEN,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    form: messageData
   },
-  function (error, response, body) {
+    function (error, response, body) {
       if (!error && response.statusCode == 200) {
-          // Print out the response body
-          res.send(body)
+        // Print out the response body
+        res.send(body)
 
-      } else { 
-          // TODO: Handle errors
-          res.send(body)
+      } else {
+        // TODO: Handle errors
+        res.send(body)
       }
-  })
-}     
+    })
+}
 
-app.get('/setup',function(req,res){
+app.get('/setup', function (req, res) {
   setGetStartedButton(res)
 })
 
@@ -125,15 +125,15 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, userid) {
-
-
+  const userInfo = getProfile(userid)
+  debug.log(userInfo)
   const messageData = {
-      'message': 'Bienvenue ' + getProfile(userid).info.fName +'!',
+    'message': 'Bienvenue ' + getProfile(userid).info.fName + '!',
   }
   const user = {
-      'userid': userid,
-      'nom': getProfile(userid).info.fName,
-      'prenom':getProfile(userid).info.lName
+    'userid': userid,
+    'nom': userInfo.last_name,
+    'prenom': userInfo.first_name
   }
 
   establishConnection.then((connectionEstablished) => {
@@ -142,19 +142,16 @@ function sendFirst(event, userid) {
 }
 
 
-function getProfile (id) {
-  const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id  + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
-  const info = []
+function getProfile(id) {
+  const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
   request({
     method: 'GET',
     url: userPublicInfo,
     json: true
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      info.fName = body.first_name
-      info.lName = body.last_name
+      return body
     }
-    return info
   })
 }
 
