@@ -16,9 +16,9 @@ module.exports = (conn) => {
       ch.bindQueue(queue_name, ex, severity)
 
       ch.consume(queue_name, function (msg) {
-        console.log("consumer")
-        console.log(msg.content.userid+" "+ msg.content.content)
-        sendTextMessage(msg.content.userid, msg.content.content)
+        let message = Json.parse(msg)
+        console.log(message.userid+" "+ message.content)
+        sendTextMessage(message.userid, message.content)
       }, { noAck: true })
     })
   })
