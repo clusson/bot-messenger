@@ -17,7 +17,6 @@ module.exports = (conn) => {
 
       ch.consume(queue_name, function (msg) {
         let message = JSON.parse(msg.content.toString())
-        console.log(message.userid+" "+ message.content)
         sendTextMessage(message.userid, message.content)
       }, { noAck: true })
     })
