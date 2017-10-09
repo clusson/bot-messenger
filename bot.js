@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 function setGetStartedButton(res){
   const messageData = {
     'get_started':{
-      'payload':'<GET_STARTED_PAYLOAD>'
+      'payload':'GET_STARTED_PAYLOAD'
     }
   }
 
@@ -77,7 +77,7 @@ app.post('/webhook', function (req, res) {
       entry.messaging.forEach(function (event) {
         if (event.message) {
           receivedMessage(event)
-        } else if (event.postback && event.postback.payload === 'get_started') {
+        } else if (event.postback && event.postback.payload === 'GET_STARTED_PAYLOAD') {
           receivedPostback(event)
         } else {
           debug.log('Webhook received unknown event: ', event)
