@@ -125,7 +125,6 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, user) {
-  console.log(event)
   const messageData = {
     message: {
       'recipientID': event.recipient.id,
