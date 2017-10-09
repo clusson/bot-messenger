@@ -19,7 +19,7 @@ module.exports = (conn) => {
         debug.log(' [x] %s: \'%s\'', msg.fields.routingKey, msg.content.toString())
         console.log("consumer")
         console.log(msg.content.userid+" "+ msg.content.content.toString())
-        sendTextMessage(msg.content.userid, msg.content.content.toString())
+        sendTextMessage(msg.content.userid, msg.content.content)
       }, { noAck: true })
     })
   })
