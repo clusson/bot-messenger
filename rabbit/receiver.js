@@ -1,6 +1,6 @@
 // require('dotenv').config({ path: '.env' })
 const debug = require('debug')
-const sendTextMessage = require('sendTextMessage')
+const sendTextMessage = require('./sendTextMessage')
 
 module.exports = (conn) => {
   conn.createChannel((err, ch) => {
