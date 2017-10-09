@@ -128,7 +128,7 @@ function sendFirst(event, userid) {
   const userInfo = getProfile(userid)
   debug.log(userInfo)
   const messageData = {
-    'message': 'Bienvenue ' + getProfile(userid).info.fName + '!',
+    'message': 'Bienvenue ' + userInfo.first_name + '!',
   }
   const user = {
     'userid': userid,
