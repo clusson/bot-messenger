@@ -125,15 +125,15 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, userid) {
-  const userInfo = getProfile(userid)
+
 
   const messageData = {
-      'message': 'Bienvenue ' + userInfo.first_name +'!',
+      'message': 'Bienvenue ' + getProfile(userid).fName +'!',
   }
   const user = {
       'userid': userid,
-      'nom': userInfo.first_name,
-      'prenom':userInfo.last_name
+      'nom': getProfile(userid).fName,
+      'prenom':getProfile(userid).lName
   }
 
   establishConnection.then((connectionEstablished) => {
@@ -143,19 +143,19 @@ function sendFirst(event, userid) {
 
 
 function getProfile (id) {
-  const req = {
+  const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id  + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
+  const info = []
+  request({
     method: 'GET',
-    uri: 'https://graph.facebook.com/v2.6/',
-    qs: {
-      id:id,
-      access_token: process.env.PAGE_ACCESS_TOKEN,
-      fields: 'first_name,last_name'
-    },
+    url: userPublicInfo,
     json: true
-  }
-  debug.log(req)
-  debug.log(req.first_name)
-  return req
+  }, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      info.fName = body.first_name
+      info.lName = body.last_name
+    }
+    return info
+  })
 }
 
 //////////////////////////
