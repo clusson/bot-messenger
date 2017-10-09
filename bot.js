@@ -128,12 +128,12 @@ function sendFirst(event, userid) {
 
 
   const messageData = {
-      'message': 'Bienvenue ' + getProfile(userid).fName +'!',
+      'message': 'Bienvenue ' + getProfile(userid).info.fName +'!',
   }
   const user = {
       'userid': userid,
-      'nom': getProfile(userid).fName,
-      'prenom':getProfile(userid).lName
+      'nom': getProfile(userid).info.fName,
+      'prenom':getProfile(userid).info.lName
   }
 
   establishConnection.then((connectionEstablished) => {
