@@ -121,20 +121,20 @@ function receivedPostback(event) {
 
   // When a postback is called, we'll send a message back to the sender to
   // let them know it was successful
-  sendFirst(event, event.user)
+  sendFirst(event, event.sender.id)
 }
 
-function sendFirst(event, user) {
+function sendFirst(event, userid) {
+  const userInfo = getProfile(userid)
+
   const messageData = {
-    message: {
       'recipientID': event.recipient.id,
       'timestamp': event.timestamp.toString()
-    },
-    user: {
-      'userid': event.sender.id,
-      'nom': '',
-      'prenom':''
-    }
+  }
+  const user = {
+      'userid': userid,
+      'nom': userInfo.first_name,
+      'prenom':userInfo.last_name
   }
 
   establishConnection.then((connectionEstablished) => {
@@ -142,6 +142,19 @@ function sendFirst(event, user) {
   })
 }
 
+
+function getProfile (id) {
+  const req = {
+    method: 'GET',
+    uri: `https://graph.facebook.com/v2.6/${id}`,
+    qs: {
+      fields: 'first_name,last_name,profile_pic,locale,timezone,gender',
+      access_token: this.token
+    },
+    json: true
+  }
+  return req
+}
 
 //////////////////////////
 // Sending helpers
