@@ -111,9 +111,9 @@ var sendTextMessage = function (recipientId, messageText) {
     // TODO - Get data from receiver
   }
   
-module.exports = () => {
+module.exports = {
   sendTextMessage : sendTextMessage
-  }
+}
 
 
 
