@@ -125,7 +125,8 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, userid) {
-  const userInfo = getProfile(userid)
+  let userInfo = {}
+  userInfo = getProfile(userid)
   const messageData = {
     'message': 'Bienvenue ' + userInfo.first_name + '!',
   }
@@ -152,6 +153,7 @@ function getProfile(id) {
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       debug.log('Get user successful' + body)
+      return user
     }
   })
 }
