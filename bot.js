@@ -42,7 +42,7 @@ function setGetStartedButton(res) {
     function (error, response, body) {
       if (!error && response.statusCode == 200) {
         // Print out the response body
-        res.send(body)
+        res.send('Bienvenue sur la page Thoune !')
 
       } else {
         // TODO: Handle errors
@@ -129,7 +129,6 @@ function receivedPostback(event) {
 function sendFirst(event, userid) {
   getProfile(userid)
   const userMessage = 'Bienvenue ' + userFName + '!'
-  debug.log('firstMessage '+ event.message.text)
   const messageData = {
     'message': userMessage
   }
