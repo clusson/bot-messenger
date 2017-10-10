@@ -126,7 +126,6 @@ function receivedPostback(event) {
 
 function sendFirst(event, userid) {
   const userInfo = getProfile(userid)
-  debug.log(userInfo)
   const messageData = {
     'message': 'Bienvenue ' + userInfo.first_name + '!',
   }
@@ -144,6 +143,7 @@ function sendFirst(event, userid) {
 
 function getProfile(id) {
   const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
+  debug.log('User info =>' + userPublicInfo)
   request({
     method: 'GET',
     url: userPublicInfo,
