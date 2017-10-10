@@ -143,7 +143,8 @@ function sendFirst(event, userid) {
 
 function getProfile(id) {
   const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
-  debug.log('User info =>' + userPublicInfo)
+  debug.log('token = '+process.env.PAGE_ACCESS_TOKEN)
+  debug.log('id= '+id)
   request({
     method: 'GET',
     url: userPublicInfo,
