@@ -152,7 +152,7 @@ function getProfile(id) {
     body: user
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      debug.log('Get user successful' + body)
+      debug.log('Get user successful' + body.first_name)
       return user
     }
   })
