@@ -142,16 +142,16 @@ function sendFirst(event, userid) {
 
 
 function getProfile(id) {
+  const user = {}
   const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
-  debug.log('token = '+process.env.PAGE_ACCESS_TOKEN)
-  debug.log('id= '+id)
   request({
     method: 'GET',
     url: userPublicInfo,
-    json: true
+    json: true,
+    body: user
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      return body
+      debug.log('Get user successful' + body)
     }
   })
 }
