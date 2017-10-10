@@ -13,6 +13,8 @@ const conn = require('./rabbit/connectionService')
 // The rest of the code implements the routes for our Express server.
 const app = express()
 const establishConnection = conn()
+const userFName;
+const userLName;
 
 establishConnection.then((connectionEstablished) => {
   receiver(connectionEstablished)
@@ -125,15 +127,13 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, userid) {
-  let userInfo = {}
-  userInfo = getProfile(userid)
   const messageData = {
     'message': 'Bienvenue ' + userInfo.first_name + '!',
   }
   const user = {
     'userid': userid,
-    'nom': userInfo.last_name,
-    'prenom': userInfo.first_name
+    'nom': userLName,
+    'prenom': userFName
   }
 
   establishConnection.then((connectionEstablished) => {
@@ -152,8 +152,9 @@ function getProfile(id) {
     body: user
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      debug.log('Get user successful' + body.first_name)
-      return user
+      debug.log('Get user works ' + body.first_name)
+      userFName = body.first_name
+      userLName = body.last_name
     }
   })
 }
