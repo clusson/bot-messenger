@@ -130,7 +130,7 @@ function sendFirst(event, userid) {
   getProfile(userid)
   const userMessage = 'Bienvenue ' + userFName + '!'
   const messageData = {
-    'message': userMessage,
+    'message': userMessage
   }
   const user = {
     'userid': userid,
