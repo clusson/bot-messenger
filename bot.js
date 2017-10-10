@@ -13,8 +13,8 @@ const conn = require('./rabbit/connectionService')
 // The rest of the code implements the routes for our Express server.
 const app = express()
 const establishConnection = conn()
-const userFName;
-const userLName;
+let userFName = ''
+let userLName= ''
 
 establishConnection.then((connectionEstablished) => {
   receiver(connectionEstablished)
@@ -127,8 +127,10 @@ function receivedPostback(event) {
 }
 
 function sendFirst(event, userid) {
+  getProfile(userid)
+  
   const messageData = {
-    'message': 'Bienvenue ' + userInfo.first_name + '!',
+    'message': 'Bienvenue ' + userFName + '!',
   }
   const user = {
     'userid': userid,
