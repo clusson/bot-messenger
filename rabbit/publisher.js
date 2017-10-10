@@ -3,9 +3,7 @@
 const debug = require('debug')
 module.exports = (conn, message, user) => {
   conn.createChannel((err, ch) => {
-    debug.log('publish is here')
-    debug.log(conn)
-
+    
     const type = process.env.RABBIT_TYPE
     const ex = process.env.RABBIT_EXCHANGE
     const queue_name = process.env.RABBIT_QUEUE_API_MESSAGE
@@ -24,6 +22,6 @@ module.exports = (conn, message, user) => {
     }
       ch.bindQueue(queue_name, ex, severity)
       ch.publish(ex, severity, new Buffer(messageStr))
-    debug.log(' [x] Sent %s: \'%s\'', severity, messageStr)
+  
   })
 }
