@@ -14,17 +14,16 @@ module.exports = (conn, message, user) => {
     const severityUser = process.env.RABBIT_BINDING_API_USER
 
     const messageStr = JSON.stringify(message)
-    const messagewUserStr = JSON.stringify(message, user)
+    const userStr = JSON.stringify(user)
 
     ch.assertExchange(ex, type, { durable: true })
     
     if (user){
       ch.bindQueue(queue_user, ex, severityUser)
-      ch.publish(ex, severity, new Buffer(messagewUserStr))
-    } else {
+      ch.publish(ex, severity, new Buffer(userStr))
+    }
       ch.bindQueue(queue_name, ex, severity)
       ch.publish(ex, severity, new Buffer(messageStr))
-    }
     debug.log(' [x] Sent %s: \'%s\'', severity, messageStr)
   })
 }
