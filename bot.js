@@ -128,9 +128,9 @@ function receivedPostback(event) {
 
 function sendFirst(event, userid) {
   getProfile(userid)
-  
+  const userMessage = 'Bienvenue ' + userFName + '!'
   const messageData = {
-    'message': 'Bienvenue ' + userFName + '!',
+    'message': userMessage,
   }
   const user = {
     'userid': userid,
