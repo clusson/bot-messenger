@@ -131,7 +131,7 @@ function sendFirst(event, userid) {
   const userMessage = 'Bienvenue ' + userFName + '!'
   debug.log('firstMessage '+ event.message.text)
   const messageData = {
-    'message': userMessage,
+    'message': userMessage
   }
   const user = {
     'userid': userid,
