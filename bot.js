@@ -126,14 +126,19 @@ function receivedPostback(event) {
   sendFirst(event, event.sender.id)
 }
 
-function sendFirst(event, userid) {
-  console.log("----------------")
-  console.log(event)
-  console.log(event.message)
+function sendFirst(event, userid) { 
   getProfile(userid)
-  const userMessage = 'Bienvenue ' + userFName + '!'
+  const senderID = event.sender.id
+  const messageText = event.postback.title
+  const timestamp = event.timestamp.toString()
+  const messageId = event.postback.title
+
+
   const messageData = {
-    'message': userMessage
+    'messageid': messageId,
+    'content': messageText,
+    'timestamp': timestamp,
+    'userid': senderID
   }
   const user = {
     'userid': userid,
@@ -167,8 +172,6 @@ function getProfile(id) {
 //////////////////////////
 // Sending helpers
 //////////////////////////
-
-
 
 // Set Express to listen out for HTTP requests
 const server = app.listen(process.env.PORT, function () {
