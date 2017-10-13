@@ -98,6 +98,7 @@ app.post('/webhook', function (req, res) {
 
 // Incoming events handling
 function receivedMessage(event) {
+  console.log(event)
   const senderID = event.sender.id
   const message = event.message
   const messageText = message.text
@@ -130,14 +131,14 @@ function sendFirst(event, userid) {
   getProfile(userid)
   const senderID = event.sender.id
   const messageText = event.postback.title
-  const timestamp = event.timestamp.toString()
+  const timestamp = Math.trunc(event.timestamp / 1000)
   const messageId = event.postback.title
 
 
   const messageData = {
     'messageid': messageId,
     'content': messageText,
-    'timestamp': timestamp,
+    'timestamp': timestamp.toString,
     'userid': senderID
   }
   const user = {
