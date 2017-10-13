@@ -109,7 +109,7 @@ function receivedMessage(event) {
   const messageData = {
     'messageid': messageId,
     'content': messageText,
-    'timestamp': timestamp.toString,
+    'timestamp': timestamp.toString(),
     'userid': senderID
   }
 
@@ -138,7 +138,7 @@ function sendFirst(event, userid) {
   const messageData = {
     'messageid': messageId,
     'content': messageText,
-    'timestamp': timestamp.toString,
+    'timestamp': timestamp.toString(),
     'userid': senderID
   }
   const user = {
