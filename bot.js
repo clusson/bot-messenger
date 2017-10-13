@@ -102,14 +102,14 @@ function receivedMessage(event) {
   const senderID = event.sender.id
   const message = event.message
   const messageText = message.text
-  const timestamp = event.timestamp.toString()
+  const timestamp = Math.trunc(event.timestamp / 1000)
   const messageAttachments = message.attachments
   const messageId = message.mid
 
   const messageData = {
     'messageid': messageId,
     'content': messageText,
-    'timestamp': timestamp,
+    'timestamp': timestamp.toString,
     'userid': senderID
   }
 
