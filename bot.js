@@ -87,11 +87,6 @@ app.post('/webhook', function(req, res) {
             })
         })
 
-        // Assume all went well.
-        //
-        // You must send back a 200, within 20 seconds, to let us know
-        // you've successfully  the callback. Otherwise, the request
-        // will time out and we will keep trying to resend.
         res.sendStatus(200)
     }
 })
@@ -121,52 +116,49 @@ function receivedMessage(event) {
 }
 
 function receivedPostback(event) {
+    const userid = event.sender.id
+    getProfile(userid).then(userData => {
+        const senderID = userid
+        const messageText = event.postback.title
+        const timestamp = Math.trunc(event.timestamp / 1000)
+        const messageId = event.postback.title
 
-    // When a postback is called, we'll send a message back to the sender to
-    // let them know it was successful
-    sendFirst(event, event.sender.id)
-}
+        const messageData = {
+            'messageid': messageId,
+            'content': messageText,
+            'timestamp': timestamp.toString(),
+            'userid': senderID
+        }
+        const user = {
+            'userid': userid,
+            'nom': userData.last_name,
+            'prenom': userData.first_name
+        }
 
-function sendFirst(event, userid) {
-    getProfile(userid)
-    const senderID = event.sender.id
-    const messageText = event.postback.title
-    const timestamp = Math.trunc(event.timestamp / 1000)
-    const messageId = event.postback.title
-
-
-    const messageData = {
-        'messageid': messageId,
-        'content': messageText,
-        'timestamp': timestamp.toString(),
-        'userid': senderID
-    }
-    const user = {
-        'userid': userid,
-        'nom': userLName,
-        'prenom': userFName
-    }
-
-    establishConnection.then((connectionEstablished) => {
-        publisher(connectionEstablished, messageData, user)
+        establishConnection.then((connectionEstablished) => {
+            publisher(connectionEstablished, messageData, user)
+        })
     })
 }
 
 
 function getProfile(id) {
-    const user = {}
-    const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
-    request({
-        method: 'GET',
-        url: userPublicInfo,
-        json: true,
-        body: user
-    }, function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-            debug.log('Get user works ' + body.first_name)
-            userFName = body.first_name
-            userLName = body.last_name
-        }
+    return new Promise((resolve) => {
+        const userPublicInfo = 'https://graph.facebook.com/v2.6/' + id + '?fields=first_name,last_name&access_token=' + process.env.PAGE_ACCESS_TOKEN
+        request({
+            method: 'GET',
+            url: userPublicInfo,
+            json: true,
+            body: {}
+        }, (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                debug.log('Get user works ' + body.first_name)
+                resolve({
+                    first_name: body.first_name,
+                    last_name: body.last_name
+                })
+            }
+        })
     })
 }
 
