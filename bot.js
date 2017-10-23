@@ -123,6 +123,8 @@ function receivedPostback(event) {
         const timestamp = Math.trunc(event.timestamp / 1000)
         const messageId = event.postback.title
 
+        debug.log('Get user works ' + userData.last_name)
+
         const messageData = {
             'messageid': messageId,
             'content': messageText,
@@ -152,7 +154,7 @@ function getProfile(id) {
             body: {}
         }, (error, response, body) => {
             if (!error && response.statusCode === 200) {
-                debug.log('Get user works ' + body.first_name)
+
                 resolve({
                     first_name: body.first_name,
                     last_name: body.last_name
