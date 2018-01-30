@@ -95,6 +95,7 @@ app.post('/webhook', function(req, res) {
 function receivedMessage(event) {
     console.log(event)
     const senderID = event.sender.id
+    const recipientID = event.recipient.id
     const message = event.message
     const messageText = message.text
     const timestamp = event.timestamp
@@ -105,7 +106,8 @@ function receivedMessage(event) {
         'messageid': messageId,
         'content': messageText,
         'timestamp': timestamp.toString(),
-        'userid': senderID
+        'userid': senderID,
+        'recipient' : recipientID
     }
 
     if (messageText) {
@@ -119,6 +121,7 @@ function receivedPostback(event) {
     const userid = event.sender.id
     getProfile(userid).then(userData => {
         const senderID = userid
+        const recipientID = event.recipient.id
         const messageText = event.postback.title
         const timestamp = Math.trunc(event.timestamp / 1000)
         const messageId = event.postback.title
@@ -129,7 +132,8 @@ function receivedPostback(event) {
             'messageid': messageId,
             'content': messageText,
             'timestamp': timestamp.toString(),
-            'userid': senderID
+            'userid': senderID,
+            'recipient' : recipientID
         }
         const user = {
             'userid': userid,
